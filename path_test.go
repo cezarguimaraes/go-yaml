@@ -58,11 +58,17 @@ store:
       price: 10
     - author: ken
       price: 12
+      title: dictionary
   bicycle:
     color: red
     price: 19.95
   bicycle*unicycle:
     price: 20.25
+nested:
+  - required: true
+    optional:
+      - first
+  - required: true
 `
 	tests := []struct {
 		name     string
@@ -103,6 +109,16 @@ store:
 			name:     `$.store.'bicycle*unicycle'.price`,
 			path:     builder().Root().Child("store").Child(`bicycle*unicycle`).Child("price").Build(),
 			expected: float64(20.25),
+		},
+		{
+			name:     "$.store.book[*].title",
+			path:     builder().Root().Child("store").Child("book").IndexAll().Child("title").Build(),
+			expected: []interface{}{nil, "dictionary"},
+		},
+		{
+			name:     "$.nested[*].optional[*]",
+			path:     builder().Root().Child("nested").IndexAll().Child("optional").IndexAll().Build(),
+			expected: []interface{}{[]interface{}{"first"}, nil},
 		},
 	}
 	t.Run("PathString", func(t *testing.T) {
