@@ -690,8 +690,15 @@ func (n *indexAllNode) filter(node ast.Node) (ast.Node, error) {
 		if err != nil {
 			return nil, errors.Wrapf(err, "failed to filter")
 		}
+		if filtered == nil {
+			filtered = ast.Null(nil)
+			// continue
+		}
 		out.Values = append(out.Values, filtered)
 	}
+	/*if len(out.Values) == 0 {
+		return nil, nil
+	}*/
 	return &out, nil
 }
 
